@@ -14,11 +14,14 @@ pipeline {
         }
 
         stage('Build and Test') {
-            steps {
-                sh 'pip install -r requirements.txt'
-                sh 'pytest'
-            }
-        }
+    steps {
+        sh '''
+            export PATH=$PATH:/home/ubuntu/.local/bin
+            pip install -r requirements.txt
+            pytest
+        '''
+    }
+}
 
         stage('Build Docker Image') {
             steps {
