@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "ritesh355/flask-app:${BUILD_NUMBER}"
-        DEPLOY_SERVER = 'ubuntu@13.201.139.141'
+        DEPLOY_SERVER = 'ubuntu@13.201.139.141'  // Replace with your EC2 Elastic IP
     }
 
     stages {
@@ -14,14 +14,14 @@ pipeline {
         }
 
         stage('Build and Test') {
-    steps {
-        sh '''
-            export PATH=$PATH:/home/ubuntu/.local/bin
-            pip install -r requirements.txt
-            pytest
-        '''
-    }
-}
+            steps {
+                sh '''
+                    export PATH=$PATH:/var/lib/jenkins/.local/bin
+                    pip install -r requirements.txt
+                    pytest
+                '''
+            }
+        }
 
         stage('Build Docker Image') {
             steps {
@@ -34,7 +34,7 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-creds') {
+                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
                         docker.image(DOCKER_IMAGE).push()
                     }
                 }
